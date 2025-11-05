@@ -4,7 +4,8 @@ export interface User {
   id: string;
   name: string;
   role: 'admin' | 'user';
-  generatedId: string;
+  userId: string;
+  password: string;
 }
 
 interface AuthContextType {
@@ -18,16 +19,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Static users data
 const USERS: User[] = [
-  { id: 'admin-001', name: 'Admin User', role: 'admin', generatedId: 'ADM001' },
-  { id: 'user-001', name: 'John Doe', role: 'user', generatedId: 'USR001' },
-  { id: 'user-002', name: 'Jane Smith', role: 'user', generatedId: 'USR002' },
+  { id: 'admin-001', name: 'Admin User', role: 'admin', userId: 'ADM001', password: 'admin123' },
+  { id: 'user-001', name: 'John Doe', role: 'user', userId: 'USR001', password: 'user123' },
+  { id: 'user-002', name: 'Jane Smith', role: 'user', userId: 'USR002', password: 'user123' },
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const login = (generatedId: string, password?: string) => {
-    const user = USERS.find(u => u.generatedId === generatedId);
+  const login = (userId: string, password?: string) => {
+    const user = USERS.find(u => u.userId === userId);
     if (user) {
       setCurrentUser(user);
       localStorage.setItem('currentUser', JSON.stringify(user));

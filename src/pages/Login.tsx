@@ -16,22 +16,22 @@ export default function Login() {
 
   const handleLogin = () => {
     if (login(userId, password)) {
-      toast({ title: 'Login successful' });
+      toast({ title: 'Login successful', duration: 5000 });
       navigate('/');
     } else {
-      toast({ title: 'Invalid credentials', variant: 'destructive' });
+      toast({ title: 'Invalid credentials', variant: 'destructive', duration: 5000 });
     }
   };
 
   const handleSkipAdmin = () => {
     skipLogin('admin');
-    toast({ title: 'Logged in as Admin' });
-    navigate('/admin');
+    toast({ title: 'Logged in as Admin', duration: 5000 });
+    navigate('/');
   };
 
   const handleSkipUser = () => {
     skipLogin('user');
-    toast({ title: 'Logged in as User' });
+    toast({ title: 'Logged in as User', duration: 5000 });
     navigate('/');
   };
 

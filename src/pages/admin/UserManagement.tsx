@@ -15,18 +15,42 @@ export default function UserManagement() {
   const [users, setUsers] = useState<User[]>(USERS);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: '', role: 'user' as 'admin' | 'user', generatedId: '' });
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    role: 'user' as 'admin' | 'user', 
+    userId: '', 
+    password: '', 
+    confirmPassword: '' 
+  });
   const { toast } = useToast();
   const { currentUser } = useAuth();
 
+  const generateUserId = () => {
+    const prefix = formData.role === 'admin' ? 'ADM' : 'USR';
+    const existingIds = users
+      .filter(u => u.userId.startsWith(prefix))
+      .map(u => parseInt(u.userId.substring(3)))
+      .filter(n => !isNaN(n));
+    const nextNum = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+    return `${prefix}${String(nextNum).padStart(3, '0')}`;
+  };
+
   const handleAdd = () => {
-    if (!formData.name || !formData.generatedId) {
-      toast({ title: 'Please fill all fields', variant: 'destructive' });
+    if (!formData.name || !formData.password || !formData.confirmPassword) {
+      toast({ title: 'Please fill all fields', variant: 'destructive', duration: 5000 });
       return;
     }
+    if (formData.password !== formData.confirmPassword) {
+      toast({ title: 'Passwords do not match', variant: 'destructive', duration: 5000 });
+      return;
+    }
+    const userId = generateUserId();
     const newUser: User = {
       id: `user-${Date.now()}`,
-      ...formData,
+      name: formData.name,
+      role: formData.role,
+      userId,
+      password: formData.password,
     };
     setUsers([...users, newUser]);
     
@@ -42,9 +66,54 @@ export default function UserManagement() {
       });
     }
     
-    toast({ title: 'User added successfully' });
-    setFormData({ name: '', role: 'user', generatedId: '' });
+    toast({ title: 'User added successfully', duration: 5000 });
+    setFormData({ name: '', role: 'user', userId: '', password: '', confirmPassword: '' });
     setIsAdding(false);
+  };
+
+  const handleEdit = (user: User) => {
+    setEditingId(user.id);
+    setFormData({
+      name: user.name,
+      role: user.role,
+      userId: user.userId,
+      password: user.password,
+      confirmPassword: user.password,
+    });
+  };
+
+  const handleUpdate = () => {
+    if (!formData.name || !formData.userId || !formData.password) {
+      toast({ title: 'Please fill all fields', variant: 'destructive', duration: 5000 });
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      toast({ title: 'Passwords do not match', variant: 'destructive', duration: 5000 });
+      return;
+    }
+    
+    const updatedUsers = users.map(u => 
+      u.id === editingId 
+        ? { ...u, name: formData.name, role: formData.role, userId: formData.userId, password: formData.password }
+        : u
+    );
+    setUsers(updatedUsers);
+    
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.id,
+        userName: currentUser.name,
+        action: 'update',
+        module: 'User Management',
+        recordId: editingId!,
+        fieldUpdated: 'User Info',
+        newValue: formData.name,
+      });
+    }
+    
+    toast({ title: 'User updated successfully', duration: 5000 });
+    setFormData({ name: '', role: 'user', userId: '', password: '', confirmPassword: '' });
+    setEditingId(null);
   };
 
   const handleDelete = (id: string) => {
@@ -63,7 +132,7 @@ export default function UserManagement() {
       });
     }
     
-    toast({ title: 'User deleted' });
+    toast({ title: 'User deleted', duration: 5000 });
   };
 
   return (
@@ -76,10 +145,10 @@ export default function UserManagement() {
         </Button>
       </div>
 
-      {isAdding && (
+      {(isAdding || editingId) && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New User</CardTitle>
+            <CardTitle>{editingId ? 'Edit User' : 'Add New User'}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -92,29 +161,69 @@ export default function UserManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Generated ID</Label>
+                <Label>Role</Label>
+                <Select value={formData.role} onValueChange={(value: 'admin' | 'user') => setFormData({ ...formData, role: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {editingId && (
+              <div className="space-y-2">
+                <Label>User ID</Label>
                 <Input
-                  value={formData.generatedId}
-                  onChange={(e) => setFormData({ ...formData, generatedId: e.target.value })}
+                  value={formData.userId}
+                  onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
                   placeholder="e.g., USR003"
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Role</Label>
-              <Select value={formData.role} onValueChange={(value: 'admin' | 'user') => setFormData({ ...formData, role: value })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">User</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
+            )}
+            {!editingId && (
+              <div className="space-y-2">
+                <Label>User ID (Auto-generated)</Label>
+                <Input
+                  value={generateUserId()}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Password</Label>
+                <Input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="Enter password"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Confirm Password</Label>
+                <Input
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  placeholder="Confirm password"
+                />
+              </div>
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleAdd}>Add User</Button>
-              <Button onClick={() => setIsAdding(false)} variant="outline">Cancel</Button>
+              <Button onClick={editingId ? handleUpdate : handleAdd}>
+                {editingId ? 'Update User' : 'Add User'}
+              </Button>
+              <Button onClick={() => {
+                setIsAdding(false);
+                setEditingId(null);
+                setFormData({ name: '', role: 'user', userId: '', password: '', confirmPassword: '' });
+              }} variant="outline">
+                Cancel
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -131,7 +240,7 @@ export default function UserManagement() {
                 <TableRow>
                   <TableHead>ID</TableHead>
                   <TableHead>Name</TableHead>
-                  <TableHead>Generated ID</TableHead>
+                  <TableHead>User ID</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -141,13 +250,20 @@ export default function UserManagement() {
                   <TableRow key={user.id}>
                     <TableCell className="font-mono text-sm">{user.id}</TableCell>
                     <TableCell>{user.name}</TableCell>
-                    <TableCell className="font-semibold">{user.generatedId}</TableCell>
+                    <TableCell className="font-semibold">{user.userId}</TableCell>
                     <TableCell>
                       <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                         {user.role}
                       </span>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right space-x-2">
+                      <Button
+                        onClick={() => handleEdit(user)}
+                        variant="ghost"
+                        size="sm"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
                       <Button
                         onClick={() => handleDelete(user.id)}
                         variant="ghost"

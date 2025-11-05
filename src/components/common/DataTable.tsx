@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Edit, Trash2 } from "lucide-react";
+import { Search, Edit, Trash2, Filter } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Column<T> {
   key: keyof T;
   label: string;
+  header?: string;
   render?: (value: any, row: T) => React.ReactNode;
 }
 
@@ -33,17 +35,24 @@ export function DataTable<T extends Record<string, any>>({
   searchPlaceholder = "Search...",
 }: DataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterColumn, setFilterColumn] = useState<string>("all");
 
-  const filteredData = data.filter((row) =>
-    Object.values(row).some((value) =>
-      String(value).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  const filteredData = useMemo(() => {
+    return data.filter((row) => {
+      const searchMatch = filterColumn === "all"
+        ? Object.values(row).some((value) =>
+            String(value).toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : String(row[filterColumn]).toLowerCase().includes(searchTerm.toLowerCase());
+      
+      return searchMatch;
+    });
+  }, [data, searchTerm, filterColumn]);
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder={searchPlaceholder}
@@ -51,6 +60,22 @@ export function DataTable<T extends Record<string, any>>({
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
+        </div>
+        <div className="flex gap-2 items-center min-w-[200px]">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <Select value={filterColumn} onValueChange={setFilterColumn}>
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Columns</SelectItem>
+              {columns.map((col) => (
+                <SelectItem key={String(col.key)} value={String(col.key)}>
+                  {col.header || col.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

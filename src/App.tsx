@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { AppLayout } from "./components/layout/AppLayout";
-import { AdminLayout } from "./components/layout/AdminLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -37,21 +36,15 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             
-            <Route path="/admin/*" element={
-              <AdminLayout>
-                <Routes>
-                  <Route path="/" element={<AdminDashboard />} />
-                  <Route path="/users" element={<UserManagement />} />
-                  <Route path="/audit-logs" element={<AuditLogs />} />
-                  <Route path="/failed-transactions" element={<FailedTransactions />} />
-                </Routes>
-              </AdminLayout>
-            } />
             
             <Route path="/*" element={
               <AppLayout>
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin/users" element={<UserManagement />} />
+                  <Route path="/admin/audit-logs" element={<AuditLogs />} />
+                  <Route path="/admin/failed-transactions" element={<FailedTransactions />} />
                   <Route path="/item-master" element={<ItemMaster />} />
                   <Route path="/vendor-master" element={<VendorMaster />} />
                   <Route path="/quantity-master" element={<QuantityMaster />} />

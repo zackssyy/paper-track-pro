@@ -6,7 +6,11 @@ import {
   FileText,
   BarChart3,
   ChevronDown,
+  LayoutDashboard,
+  Activity,
+  AlertCircle,
 } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +33,8 @@ import {
 
 export function AppSidebar() {
   const { open } = useSidebar();
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
 
   const masterItems = [
     { title: "Item Master", url: "/item-master", icon: Package },
@@ -50,6 +56,13 @@ export function AppSidebar() {
     { title: "Vendor Ledger", url: "/vendor-ledger" },
   ];
 
+  const adminItems = [
+    { title: "Admin Dashboard", url: "/admin", icon: LayoutDashboard },
+    { title: "User Management", url: "/admin/users", icon: Users },
+    { title: "Audit Logs", url: "/admin/audit-logs", icon: Activity },
+    { title: "Failed Transactions", url: "/admin/failed-transactions", icon: AlertCircle },
+  ];
+
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarContent>
@@ -61,6 +74,54 @@ export function AppSidebar() {
             Paper Sales Management
           </p>
         </div>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink
+                    to="/"
+                    end
+                    className={({ isActive }) =>
+                      isActive ? "bg-sidebar-accent" : ""
+                    }
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {adminItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === '/admin'}
+                        className={({ isActive }) =>
+                          isActive ? "bg-sidebar-accent" : ""
+                        }
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         <SidebarGroup>
           <SidebarGroupLabel>Masters</SidebarGroupLabel>
