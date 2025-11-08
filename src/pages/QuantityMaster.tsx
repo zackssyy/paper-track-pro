@@ -5,12 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-import { quantitiesData } from "@/data/dummyData";
+import { useQuantities } from "@/hooks/useAppData";
 import { Quantity } from "@/types";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { logAudit } from "@/utils/auditLogger";
 
 export default function QuantityMaster() {
-  const [quantities, setQuantities] = useState<Quantity[]>(quantitiesData);
+  const [quantities, setQuantities] = useQuantities();
+  const { currentUser } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Quantity>({
     quantityId: "",
@@ -31,10 +34,28 @@ export default function QuantityMaster() {
       const updated = [...quantities];
       updated[editingIndex] = formData;
       setQuantities(updated);
-      toast.success("Quantity updated successfully");
+      if (currentUser) {
+        logAudit({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          action: 'update',
+          module: 'Quantity Master',
+          recordId: formData.quantityId,
+        });
+      }
+      toast.success("Quantity updated successfully", { duration: 5000 });
     } else {
       setQuantities([...quantities, formData]);
-      toast.success("Quantity added successfully");
+      if (currentUser) {
+        logAudit({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          action: 'create',
+          module: 'Quantity Master',
+          recordId: formData.quantityId,
+        });
+      }
+      toast.success("Quantity added successfully", { duration: 5000 });
     }
     resetForm();
   };
@@ -51,7 +72,16 @@ export default function QuantityMaster() {
     setQuantities(
       quantities.filter((q) => q.quantityId !== row.quantityId)
     );
-    toast.success("Quantity deleted successfully");
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        action: 'delete',
+        module: 'Quantity Master',
+        recordId: row.quantityId,
+      });
+    }
+    toast.success("Quantity deleted successfully", { duration: 5000 });
   };
 
   const resetForm = () => {
@@ -65,13 +95,13 @@ export default function QuantityMaster() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">Quantity Master</h2>
-          <p className="text-muted-foreground">Manage quantity definitions</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Quantity Master</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Manage quantity definitions</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Quantity
         </Button>
@@ -80,12 +110,12 @@ export default function QuantityMaster() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-lg md:text-xl">
               {editingIndex !== null ? "Edit" : "Add"} Quantity
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="quantityId">Quantity ID</Label>
                 <Input
@@ -123,7 +153,7 @@ export default function QuantityMaster() {
                   required
                 />
               </div>
-              <div className="flex gap-2 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
                 <Button type="submit">
                   {editingIndex !== null ? "Update" : "Add"}
                 </Button>
@@ -138,7 +168,7 @@ export default function QuantityMaster() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Quantities List</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Quantities List</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

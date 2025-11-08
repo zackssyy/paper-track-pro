@@ -5,12 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-import { itemsData } from "@/data/dummyData";
+import { useItems } from "@/hooks/useAppData";
 import { Item } from "@/types";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { logAudit } from "@/utils/auditLogger";
 
 export default function ItemMaster() {
-  const [items, setItems] = useState<Item[]>(itemsData);
+  const [items, setItems] = useItems();
+  const { currentUser } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Item>({
     itemNumber: "",
@@ -35,10 +38,28 @@ export default function ItemMaster() {
       const updated = [...items];
       updated[editingIndex] = formData;
       setItems(updated);
-      toast.success("Item updated successfully");
+      if (currentUser) {
+        logAudit({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          action: 'update',
+          module: 'Item Master',
+          recordId: formData.itemNumber,
+        });
+      }
+      toast.success("Item updated successfully", { duration: 5000 });
     } else {
       setItems([...items, formData]);
-      toast.success("Item added successfully");
+      if (currentUser) {
+        logAudit({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          action: 'create',
+          module: 'Item Master',
+          recordId: formData.itemNumber,
+        });
+      }
+      toast.success("Item added successfully", { duration: 5000 });
     }
     resetForm();
   };
@@ -51,7 +72,16 @@ export default function ItemMaster() {
 
   const handleDelete = (row: Item) => {
     setItems(items.filter((item) => item.itemNumber !== row.itemNumber));
-    toast.success("Item deleted successfully");
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        action: 'delete',
+        module: 'Item Master',
+        recordId: row.itemNumber,
+      });
+    }
+    toast.success("Item deleted successfully", { duration: 5000 });
   };
 
   const resetForm = () => {

@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataTable } from "@/components/common/DataTable";
-import { challansData } from "@/data/dummyData";
+import { useChallans } from "@/hooks/useAppData";
 import { Challan } from "@/types";
 
 export default function ChallanRegister() {
+  const [challans] = useChallans();
   const columns = [
     { key: "challanDate" as keyof Challan, label: "Challan Date" },
     { key: "challanNo" as keyof Challan, label: "Challan No" },
@@ -13,19 +14,19 @@ export default function ChallanRegister() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Challan Register</h2>
-        <p className="text-muted-foreground">All challan records</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">Challan Register</h2>
+        <p className="text-sm md:text-base text-muted-foreground">All challan records</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Challan Register Report</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Challan Register Report</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable
-            data={challansData}
+            data={challans}
             columns={columns}
             searchPlaceholder="Search challans..."
           />

@@ -5,12 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-import { vendorsData } from "@/data/dummyData";
+import { useVendors } from "@/hooks/useAppData";
 import { Vendor } from "@/types";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { logAudit } from "@/utils/auditLogger";
 
 export default function VendorMaster() {
-  const [vendors, setVendors] = useState<Vendor[]>(vendorsData);
+  const [vendors, setVendors] = useVendors();
+  const { currentUser } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Vendor>({
     vendorCode: "",
@@ -35,10 +38,28 @@ export default function VendorMaster() {
       const updated = [...vendors];
       updated[editingIndex] = formData;
       setVendors(updated);
-      toast.success("Vendor updated successfully");
+      if (currentUser) {
+        logAudit({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          action: 'update',
+          module: 'Vendor Master',
+          recordId: formData.vendorCode,
+        });
+      }
+      toast.success("Vendor updated successfully", { duration: 5000 });
     } else {
       setVendors([...vendors, formData]);
-      toast.success("Vendor added successfully");
+      if (currentUser) {
+        logAudit({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          action: 'create',
+          module: 'Vendor Master',
+          recordId: formData.vendorCode,
+        });
+      }
+      toast.success("Vendor added successfully", { duration: 5000 });
     }
     resetForm();
   };
@@ -53,7 +74,16 @@ export default function VendorMaster() {
 
   const handleDelete = (row: Vendor) => {
     setVendors(vendors.filter((vendor) => vendor.vendorCode !== row.vendorCode));
-    toast.success("Vendor deleted successfully");
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        action: 'delete',
+        module: 'Vendor Master',
+        recordId: row.vendorCode,
+      });
+    }
+    toast.success("Vendor deleted successfully", { duration: 5000 });
   };
 
   const resetForm = () => {
@@ -69,13 +99,13 @@ export default function VendorMaster() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">Vendor Master</h2>
-          <p className="text-muted-foreground">Manage vendor information</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Vendor Master</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Manage vendor information</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Vendor
         </Button>
@@ -84,10 +114,10 @@ export default function VendorMaster() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>{editingIndex !== null ? "Edit" : "Add"} Vendor</CardTitle>
+            <CardTitle className="text-lg md:text-xl">{editingIndex !== null ? "Edit" : "Add"} Vendor</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="vendorCode">Vendor Code</Label>
                 <Input
@@ -110,7 +140,7 @@ export default function VendorMaster() {
                   required
                 />
               </div>
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="vendorAddress">Address</Label>
                 <Input
                   id="vendorAddress"
@@ -143,7 +173,7 @@ export default function VendorMaster() {
                   required
                 />
               </div>
-              <div className="flex gap-2 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
                 <Button type="submit">
                   {editingIndex !== null ? "Update" : "Add"}
                 </Button>
@@ -158,7 +188,7 @@ export default function VendorMaster() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Vendors List</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Vendors List</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

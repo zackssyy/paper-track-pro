@@ -12,12 +12,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { invoicesData, itemsData } from "@/data/dummyData";
+import { useInvoices, useItems } from "@/hooks/useAppData";
 import { Invoice } from "@/types";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { logAudit } from "@/utils/auditLogger";
 
 export default function InvoiceEntry() {
-  const [invoices, setInvoices] = useState<Invoice[]>(invoicesData);
+  const [invoices, setInvoices] = useInvoices();
+  const [items] = useItems();
+  const { currentUser } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Invoice>({
     challanNo: "",
@@ -48,7 +52,16 @@ export default function InvoiceEntry() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setInvoices([...invoices, formData]);
-    toast.success("Invoice added successfully");
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        action: 'create',
+        module: 'Invoice Entry',
+        recordId: formData.invoiceNo,
+      });
+    }
+    toast.success("Invoice added successfully", { duration: 5000 });
     resetForm();
   };
 
@@ -67,13 +80,13 @@ export default function InvoiceEntry() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">Invoice Entry</h2>
-          <p className="text-muted-foreground">Record invoice details</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Invoice Entry</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Record invoice details</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Invoice
         </Button>
@@ -82,10 +95,10 @@ export default function InvoiceEntry() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add Invoice</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Add Invoice</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="challanNo">Challan No</Label>
                 <Input
@@ -144,7 +157,7 @@ export default function InvoiceEntry() {
                     <SelectValue placeholder="Select item" />
                   </SelectTrigger>
                   <SelectContent>
-                    {itemsData.map((item) => (
+                    {items.map((item) => (
                       <SelectItem key={item.itemNumber} value={item.itemName}>
                         {item.itemName}
                       </SelectItem>
@@ -193,7 +206,7 @@ export default function InvoiceEntry() {
                   required
                 />
               </div>
-              <div className="flex gap-2 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
                 <Button type="submit">Add Invoice</Button>
                 <Button type="button" variant="outline" onClick={resetForm}>
                   Cancel
@@ -206,7 +219,7 @@ export default function InvoiceEntry() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Invoices List</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Invoices List</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

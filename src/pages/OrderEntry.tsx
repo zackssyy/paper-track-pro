@@ -12,12 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { ordersData, itemsData, quantitiesData } from "@/data/dummyData";
+import { useOrders, useItems, useQuantities } from "@/hooks/useAppData";
 import { Order } from "@/types";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { logAudit } from "@/utils/auditLogger";
 
 export default function OrderEntry() {
-  const [orders, setOrders] = useState<Order[]>(ordersData);
+  const [orders, setOrders] = useOrders();
+  const [items] = useItems();
+  const [quantities] = useQuantities();
+  const { currentUser } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Order>({
     orderNumber: "",
@@ -42,7 +47,16 @@ export default function OrderEntry() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setOrders([...orders, formData]);
-    toast.success("Order added successfully");
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        action: 'create',
+        module: 'Order Entry',
+        recordId: formData.orderNumber,
+      });
+    }
+    toast.success("Order added successfully", { duration: 5000 });
     resetForm();
   };
 
@@ -137,7 +151,7 @@ export default function OrderEntry() {
                     <SelectValue placeholder="Select item" />
                   </SelectTrigger>
                   <SelectContent>
-                    {itemsData.map((item) => (
+                    {items.map((item) => (
                       <SelectItem key={item.itemNumber} value={item.itemName}>
                         {item.itemName}
                       </SelectItem>
@@ -172,7 +186,7 @@ export default function OrderEntry() {
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {quantitiesData.map((qty) => (
+                    {quantities.map((qty) => (
                       <SelectItem key={qty.quantityId} value={qty.quantityName}>
                         {qty.quantityName}
                       </SelectItem>

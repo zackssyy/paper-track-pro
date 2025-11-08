@@ -12,12 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { challansData, itemsData, quantitiesData } from "@/data/dummyData";
+import { useChallans, useItems, useQuantities } from "@/hooks/useAppData";
 import { Challan } from "@/types";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { logAudit } from "@/utils/auditLogger";
 
 export default function ChallanEntry() {
-  const [challans, setChallans] = useState<Challan[]>(challansData);
+  const [challans, setChallans] = useChallans();
+  const [items] = useItems();
+  const [quantities] = useQuantities();
+  const { currentUser } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Challan>({
     orderNo: "",
@@ -42,7 +47,16 @@ export default function ChallanEntry() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setChallans([...challans, formData]);
-    toast.success("Challan added successfully");
+    if (currentUser) {
+      logAudit({
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        action: 'create',
+        module: 'Challan Entry',
+        recordId: formData.challanNo,
+      });
+    }
+    toast.success("Challan added successfully", { duration: 5000 });
     resetForm();
   };
 
@@ -60,13 +74,13 @@ export default function ChallanEntry() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">Challan Entry</h2>
-          <p className="text-muted-foreground">Record challan details</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Challan Entry</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Record challan details</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Challan
         </Button>
@@ -75,10 +89,10 @@ export default function ChallanEntry() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add Challan</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Add Challan</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="orderNo">Order No</Label>
                 <Input
@@ -137,7 +151,7 @@ export default function ChallanEntry() {
                     <SelectValue placeholder="Select item" />
                   </SelectTrigger>
                   <SelectContent>
-                    {itemsData.map((item) => (
+                    {items.map((item) => (
                       <SelectItem key={item.itemNumber} value={item.itemName}>
                         {item.itemName}
                       </SelectItem>
@@ -172,7 +186,7 @@ export default function ChallanEntry() {
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {quantitiesData.map((qty) => (
+                    {quantities.map((qty) => (
                       <SelectItem key={qty.quantityId} value={qty.quantityName}>
                         {qty.quantityName}
                       </SelectItem>
@@ -180,7 +194,7 @@ export default function ChallanEntry() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex gap-2 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
                 <Button type="submit">Add Challan</Button>
                 <Button type="button" variant="outline" onClick={resetForm}>
                   Cancel
@@ -193,7 +207,7 @@ export default function ChallanEntry() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Challans List</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Challans List</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataTable } from "@/components/common/DataTable";
-import { invoicesData } from "@/data/dummyData";
+import { useInvoices } from "@/hooks/useAppData";
 import { Invoice } from "@/types";
 
 export default function InvoiceRegister() {
+  const [invoices] = useInvoices();
   const columns = [
     { key: "invoiceDate" as keyof Invoice, label: "Date of Invoice" },
     { key: "invoiceNo" as keyof Invoice, label: "Invoice No" },
@@ -20,19 +21,19 @@ export default function InvoiceRegister() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Invoice Register</h2>
-        <p className="text-muted-foreground">Complete invoice records</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">Invoice Register</h2>
+        <p className="text-sm md:text-base text-muted-foreground">Complete invoice records</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Invoice Register Report</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Invoice Register Report</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable
-            data={invoicesData}
+            data={invoices}
             columns={columns}
             searchPlaceholder="Search invoices..."
           />

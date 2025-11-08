@@ -5,16 +5,16 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable } from "@/components/common/DataTable";
-import { vendorsData } from "@/data/dummyData";
+import { useVendors, useVendorPayments } from "@/hooks/useAppData";
 import { VendorLedgerPayment } from "@/types";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { logAudit } from "@/utils/auditLogger";
 
 export default function VendorPayment() {
-  const { toast } = useToast();
   const { currentUser } = useAuth();
-  const [payments, setPayments] = useState<VendorLedgerPayment[]>([]);
+  const [vendors] = useVendors();
+  const [payments, setPayments] = useVendorPayments();
   const [formData, setFormData] = useState({
     paymentDate: "",
     vendorName: "",
@@ -39,11 +39,7 @@ export default function VendorPayment() {
       userName: currentUser?.name || "Guest",
     });
 
-    toast({
-      title: "Success",
-      description: "Vendor payment recorded successfully",
-      duration: 5000,
-    });
+    toast.success("Vendor payment recorded successfully", { duration: 5000 });
 
     setFormData({
       paymentDate: "",
@@ -64,11 +60,7 @@ export default function VendorPayment() {
       userName: currentUser?.name || "Guest",
     });
 
-    toast({
-      title: "Deleted",
-      description: "Vendor payment deleted successfully",
-      duration: 5000,
-    });
+    toast.success("Vendor payment deleted successfully", { duration: 5000 });
   };
 
   const columns = [
@@ -122,7 +114,7 @@ export default function VendorPayment() {
                     <SelectValue placeholder="Select Vendor" />
                   </SelectTrigger>
                   <SelectContent>
-                    {vendorsData.map((vendor) => (
+                    {vendors.map((vendor) => (
                       <SelectItem key={vendor.vendorCode} value={vendor.vendorName}>
                         {vendor.vendorName}
                       </SelectItem>
