@@ -30,25 +30,25 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Dashboard</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">Dashboard</h2>
+        <p className="text-sm md:text-base text-muted-foreground">
           Overview of your inventory management system
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground">
                 {stat.title}
               </CardTitle>
               <stat.icon className="h-4 w-4 text-accent" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+              <div className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 {stat.description}
               </p>
@@ -59,14 +59,14 @@ export default function Dashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Welcome to Inventory Management System</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Welcome to Inventory Management System</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-muted-foreground">
+          <p className="text-sm md:text-base text-muted-foreground">
             This system helps you manage examination paper sales efficiently. Use the
             sidebar to navigate through different modules:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+          <ul className="list-disc list-inside space-y-2 text-sm md:text-base text-muted-foreground">
             <li>
               <strong className="text-foreground">Masters:</strong> Manage items,
               vendors, and quantity definitions

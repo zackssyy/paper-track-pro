@@ -67,13 +67,13 @@ export default function ItemMaster() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">Item Master</h2>
-          <p className="text-muted-foreground">Manage inventory items</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Item Master</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Manage inventory items</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Item
         </Button>
@@ -82,10 +82,10 @@ export default function ItemMaster() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>{editingIndex !== null ? "Edit" : "Add"} Item</CardTitle>
+            <CardTitle className="text-lg md:text-xl">{editingIndex !== null ? "Edit" : "Add"} Item</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="itemNumber">Item Number</Label>
                 <Input
@@ -108,7 +108,7 @@ export default function ItemMaster() {
                   required
                 />
               </div>
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="description">Description</Label>
                 <Input
                   id="description"
@@ -141,7 +141,7 @@ export default function ItemMaster() {
                   required
                 />
               </div>
-              <div className="flex gap-2 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
                 <Button type="submit">
                   {editingIndex !== null ? "Update" : "Add"}
                 </Button>
@@ -156,7 +156,7 @@ export default function ItemMaster() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Items List</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Items List</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

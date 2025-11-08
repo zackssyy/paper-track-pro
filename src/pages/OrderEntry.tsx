@@ -60,13 +60,13 @@ export default function OrderEntry() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">Order Entry</h2>
-          <p className="text-muted-foreground">Record new orders</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Order Entry</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Record new orders</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Order
         </Button>
@@ -75,10 +75,10 @@ export default function OrderEntry() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add Order</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Add Order</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="orderNumber">Order Number</Label>
                 <Input
@@ -180,7 +180,7 @@ export default function OrderEntry() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex gap-2 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
                 <Button type="submit">Add Order</Button>
                 <Button type="button" variant="outline" onClick={resetForm}>
                   Cancel
@@ -193,7 +193,7 @@ export default function OrderEntry() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Orders List</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Orders List</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable

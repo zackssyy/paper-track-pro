@@ -17,6 +17,7 @@ import QuantityMaster from "./pages/QuantityMaster";
 import OrderEntry from "./pages/OrderEntry";
 import ChallanEntry from "./pages/ChallanEntry";
 import InvoiceEntry from "./pages/InvoiceEntry";
+import VendorPayment from "./pages/VendorPayment";
 import ItemLedger from "./pages/ItemLedger";
 import OrderRegister from "./pages/OrderRegister";
 import ChallanRegister from "./pages/ChallanRegister";
@@ -48,10 +49,11 @@ const App = () => (
                   <Route path="/item-master" element={<ItemMaster />} />
                   <Route path="/vendor-master" element={<VendorMaster />} />
                   <Route path="/quantity-master" element={<QuantityMaster />} />
-                  <Route path="/order-entry" element={<OrderEntry />} />
-                  <Route path="/challan-entry" element={<ChallanEntry />} />
-                  <Route path="/invoice-entry" element={<InvoiceEntry />} />
-                  <Route path="/item-ledger" element={<ItemLedger />} />
+            <Route path="/order-entry" element={<OrderEntry />} />
+            <Route path="/challan-entry" element={<ChallanEntry />} />
+            <Route path="/invoice-entry" element={<InvoiceEntry />} />
+            <Route path="/vendor-payment" element={<VendorPayment />} />
+            <Route path="/item-ledger" element={<ItemLedger />} />
                   <Route path="/order-register" element={<OrderRegister />} />
                   <Route path="/challan-register" element={<ChallanRegister />} />
                   <Route path="/invoice-register" element={<InvoiceRegister />} />

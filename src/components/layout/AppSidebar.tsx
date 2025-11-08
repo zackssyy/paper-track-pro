@@ -46,6 +46,7 @@ export function AppSidebar() {
     { title: "Order Entry", url: "/order-entry" },
     { title: "Challan Entry", url: "/challan-entry" },
     { title: "Invoice Entry", url: "/invoice-entry" },
+    { title: "Vendor Payment", url: "/vendor-payment" },
   ];
 
   const reportItems = [

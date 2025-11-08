@@ -21,19 +21,19 @@ export default function ItemLedger() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Item Ledger</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">Item Ledger</h2>
+        <p className="text-sm md:text-base text-muted-foreground">
           Track item movements and balances
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Item Ledger Report</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Item Ledger Report</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           <DataTable
             data={itemLedgerData}
             columns={columns}

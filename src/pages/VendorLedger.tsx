@@ -21,18 +21,18 @@ export default function VendorLedger() {
   const balance = totalInvoice - totalPayment;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6 p-4 md:p-6">
       <div>
-        <h2 className="text-3xl font-bold text-foreground">Vendor Ledger</h2>
-        <p className="text-muted-foreground">Paper Supplies Ltd</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">Vendor Ledger</h2>
+        <p className="text-sm md:text-base text-muted-foreground">Paper Supplies Ltd</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Invoice Details</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Invoice Details</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -64,9 +64,9 @@ export default function VendorLedger() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Payment Details</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Payment Details</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -99,9 +99,9 @@ export default function VendorLedger() {
 
       <Card className="border-accent border-2">
         <CardContent className="pt-6">
-          <div className="flex justify-between items-center text-lg">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-base md:text-lg">
             <span className="font-semibold text-foreground">Balance Amount:</span>
-            <span className="text-2xl font-bold text-accent">
+            <span className="text-xl md:text-2xl font-bold text-accent">
               ₹{balance.toLocaleString()}
             </span>
           </div>
