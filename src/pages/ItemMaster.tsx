@@ -21,6 +21,7 @@ export default function ItemMaster() {
     description: "",
     size: "",
     color: "",
+    currentStock: 0,
   });
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -91,6 +92,7 @@ export default function ItemMaster() {
       description: "",
       size: "",
       color: "",
+      currentStock: 0,
     });
     setEditingIndex(null);
     setShowForm(false);

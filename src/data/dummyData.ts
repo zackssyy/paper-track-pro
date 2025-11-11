@@ -1,11 +1,11 @@
-import { Item, Vendor, Quantity, Order, Challan, Invoice, ItemLedgerEntry, VendorLedgerInvoice, VendorLedgerPayment } from '@/types';
+import { Item, Vendor, Department, PurchaseOrder, Challan, Bill, ItemIssue } from '@/types';
 
 export const itemsData: Item[] = [
-  { itemNumber: '001', itemName: 'Standard Paper', description: 'A4 size white paper', size: 'A4', color: 'White' },
-  { itemNumber: '002', itemName: 'Premium Paper', description: 'A4 size glossy paper', size: 'A4', color: 'Cream' },
-  { itemNumber: '003', itemName: 'Answer Book', description: '24 pages answer booklet', size: 'A5', color: 'Blue' },
-  { itemNumber: '004', itemName: 'Graph Paper', description: 'Grid pattern paper', size: 'A4', color: 'White' },
-  { itemNumber: '005', itemName: 'OMR Sheet', description: 'Optical mark recognition sheet', size: 'A4', color: 'White' },
+  { itemNumber: '001', itemName: 'Standard Paper', description: 'A4 size white paper', size: 'A4', color: 'White', currentStock: 500 },
+  { itemNumber: '002', itemName: 'Premium Paper', description: 'A4 size glossy paper', size: 'A4', color: 'Cream', currentStock: 300 },
+  { itemNumber: '003', itemName: 'Answer Book', description: '24 pages answer booklet', size: 'A5', color: 'Blue', currentStock: 1000 },
+  { itemNumber: '004', itemName: 'Graph Paper', description: 'Grid pattern paper', size: 'A4', color: 'White', currentStock: 200 },
+  { itemNumber: '005', itemName: 'OMR Sheet', description: 'Optical mark recognition sheet', size: 'A4', color: 'White', currentStock: 150 },
 ];
 
 export const vendorsData: Vendor[] = [
@@ -15,44 +15,30 @@ export const vendorsData: Vendor[] = [
   { vendorCode: 'V004', vendorName: 'Exam Supplies Co', vendorAddress: '321 Business Park', vendorContact: '9876543213', materialType: 'Examination Materials' },
 ];
 
-export const quantitiesData: Quantity[] = [
-  { quantityId: 'Q001', quantityName: 'Ream', quantity: 500 },
-  { quantityId: 'Q002', quantityName: 'Bundle', quantity: 100 },
-  { quantityId: 'Q003', quantityName: 'Box', quantity: 1000 },
-  { quantityId: 'Q004', quantityName: 'Packet', quantity: 50 },
+export const departmentsData: Department[] = [
+  { departmentCode: 'DEPT001', departmentName: 'IT Department', departmentHead: 'John Smith', contactNumber: '9876543214' },
+  { departmentCode: 'DEPT002', departmentName: 'HR Department', departmentHead: 'Jane Doe', contactNumber: '9876543215' },
+  { departmentCode: 'DEPT003', departmentName: 'Finance Department', departmentHead: 'Bob Johnson', contactNumber: '9876543216' },
 ];
 
-export const ordersData: Order[] = [
-  { orderNumber: 'ORD001', orderDate: '2024-01-15', challanNo: 'CH001', challanDate: '2024-01-16', item: 'Standard Paper', receivedQuantity: 10, quantityType: 'Ream' },
-  { orderNumber: 'ORD002', orderDate: '2024-01-20', challanNo: 'CH002', challanDate: '2024-01-21', item: 'Answer Book', receivedQuantity: 50, quantityType: 'Bundle' },
-  { orderNumber: 'ORD003', orderDate: '2024-02-05', challanNo: 'CH003', challanDate: '2024-02-06', item: 'OMR Sheet', receivedQuantity: 5, quantityType: 'Box' },
+export const purchaseOrdersData: PurchaseOrder[] = [
+  { orderNumber: 'PO001', orderDate: '2024-01-15', vendorCode: 'V001', itemNumber: '001', orderedQuantity: 100, receivedQuantity: 60, unit: 'Ream', status: 'Partial' },
+  { orderNumber: 'PO002', orderDate: '2024-01-20', vendorCode: 'V002', itemNumber: '003', orderedQuantity: 200, receivedQuantity: 200, unit: 'Bundle', status: 'Completed' },
+  { orderNumber: 'PO003', orderDate: '2024-02-05', vendorCode: 'V004', itemNumber: '005', orderedQuantity: 50, receivedQuantity: 0, unit: 'Box', status: 'Pending' },
 ];
 
 export const challansData: Challan[] = [
-  { orderNo: 'ORD001', orderDate: '2024-01-15', challanNo: 'CH001', challanDate: '2024-01-16', item: 'Standard Paper', receivedQuantity: 10, quantityType: 'Ream' },
-  { orderNo: 'ORD002', orderDate: '2024-01-20', challanNo: 'CH002', challanDate: '2024-01-21', item: 'Answer Book', receivedQuantity: 50, quantityType: 'Bundle' },
-  { orderNo: 'ORD003', orderDate: '2024-02-05', challanNo: 'CH003', challanDate: '2024-02-06', item: 'OMR Sheet', receivedQuantity: 5, quantityType: 'Box' },
+  { challanNo: 'CH001', challanDate: '2024-01-18', orderNumber: 'PO001', vendorCode: 'V001', itemNumber: '001', receivedQuantity: 40, unit: 'Ream' },
+  { challanNo: 'CH002', challanDate: '2024-01-22', orderNumber: 'PO001', vendorCode: 'V001', itemNumber: '001', receivedQuantity: 20, unit: 'Ream' },
+  { challanNo: 'CH003', challanDate: '2024-01-25', orderNumber: 'PO002', vendorCode: 'V002', itemNumber: '003', receivedQuantity: 200, unit: 'Bundle' },
 ];
 
-export const invoicesData: Invoice[] = [
-  { challanNo: 'CH001', challanDate: '2024-01-16', invoiceNo: 'INV001', invoiceDate: '2024-01-17', itemName: 'Standard Paper', quantity: 10, itemType: 'Ream', invoiceAmount: 5000 },
-  { challanNo: 'CH002', challanDate: '2024-01-21', invoiceNo: 'INV002', invoiceDate: '2024-01-22', itemName: 'Answer Book', quantity: 50, itemType: 'Bundle', invoiceAmount: 12500 },
-  { challanNo: 'CH003', challanDate: '2024-02-06', invoiceNo: 'INV003', invoiceDate: '2024-02-07', itemName: 'OMR Sheet', quantity: 5, itemType: 'Box', invoiceAmount: 7500 },
+export const billsData: Bill[] = [
+  { billNo: 'BILL001', billDate: '2024-01-20', challanNo: 'CH001', vendorCode: 'V001', itemNumber: '001', quantity: 40, unit: 'Ream', ratePerUnit: 500, amount: 20000, cgstPercent: 9, cgstAmount: 1800, sgstPercent: 9, sgstAmount: 1800, totalAmount: 23600, isPaid: false },
+  { billNo: 'BILL002', billDate: '2024-01-27', challanNo: 'CH003', vendorCode: 'V002', itemNumber: '003', quantity: 200, unit: 'Bundle', ratePerUnit: 25, amount: 5000, cgstPercent: 9, cgstAmount: 450, sgstPercent: 9, sgstAmount: 450, totalAmount: 5900, isPaid: true },
 ];
 
-export const itemLedgerData: ItemLedgerEntry[] = [
-  { challanDate: '2024-01-16', challanNo: 'CH001', receivedQuantity: 10, issueDate: '2024-01-20', issuedTo: 'Dept A', quantity: 5, balanceQuantity: 5 },
-  { challanDate: '2024-01-21', challanNo: 'CH002', receivedQuantity: 50, issueDate: '2024-01-25', issuedTo: 'Dept B', quantity: 20, balanceQuantity: 30 },
-  { challanDate: '2024-02-06', challanNo: 'CH003', receivedQuantity: 5, issueDate: '2024-02-10', issuedTo: 'Dept C', quantity: 2, balanceQuantity: 3 },
-];
-
-export const vendorInvoicesData: VendorLedgerInvoice[] = [
-  { invoiceDate: '2024-01-17', invoiceNo: 'INV001', invoiceAmount: 5000 },
-  { invoiceDate: '2024-01-22', invoiceNo: 'INV002', invoiceAmount: 12500 },
-  { invoiceDate: '2024-02-07', invoiceNo: 'INV003', invoiceAmount: 7500 },
-];
-
-export const vendorPaymentsData: VendorLedgerPayment[] = [
-  { paymentDate: '2024-01-25', modeOfPayment: 'Bank Transfer', paymentAmount: 5000 },
-  { paymentDate: '2024-02-01', modeOfPayment: 'Cheque', paymentAmount: 10000 },
+export const itemIssuesData: ItemIssue[] = [
+  { issueNo: 'ISS001', issueDate: '2024-01-28', itemNumber: '001', departmentCode: 'DEPT001', issuedQuantity: 10, unit: 'Ream', issuedBy: 'Admin User', issuedTo: 'John Smith' },
+  { issueNo: 'ISS002', issueDate: '2024-02-02', itemNumber: '003', departmentCode: 'DEPT002', issuedQuantity: 50, unit: 'Bundle', issuedBy: 'Admin User', issuedTo: 'Jane Doe' },
 ];

@@ -4,6 +4,7 @@ export interface Item {
   description: string;
   size: string;
   color: string;
+  currentStock: number;
 }
 
 export interface Vendor {
@@ -14,61 +15,68 @@ export interface Vendor {
   materialType: string;
 }
 
-export interface Quantity {
-  quantityId: string;
-  quantityName: string;
-  quantity: number;
+export interface Department {
+  departmentCode: string;
+  departmentName: string;
+  departmentHead: string;
+  contactNumber: string;
 }
 
-export interface Order {
+export interface PurchaseOrder {
   orderNumber: string;
   orderDate: string;
-  challanNo: string;
-  challanDate: string;
-  item: string;
+  vendorCode: string;
+  itemNumber: string;
+  orderedQuantity: number;
   receivedQuantity: number;
-  quantityType: string;
+  unit: string;
+  status: 'Pending' | 'Partial' | 'Completed';
 }
 
 export interface Challan {
-  orderNo: string;
-  orderDate: string;
   challanNo: string;
   challanDate: string;
-  item: string;
+  orderNumber: string;
+  vendorCode: string;
+  itemNumber: string;
   receivedQuantity: number;
-  quantityType: string;
+  unit: string;
 }
 
-export interface Invoice {
+export interface Bill {
+  billNo: string;
+  billDate: string;
   challanNo: string;
-  challanDate: string;
-  invoiceNo: string;
-  invoiceDate: string;
-  itemName: string;
+  vendorCode: string;
+  itemNumber: string;
   quantity: number;
-  itemType: string;
-  invoiceAmount?: number;
+  unit: string;
+  ratePerUnit: number;
+  amount: number;
+  cgstPercent: number;
+  cgstAmount: number;
+  sgstPercent: number;
+  sgstAmount: number;
+  totalAmount: number;
+  isPaid: boolean;
+}
+
+export interface ItemIssue {
+  issueNo: string;
+  issueDate: string;
+  itemNumber: string;
+  departmentCode: string;
+  issuedQuantity: number;
+  unit: string;
+  issuedBy: string;
+  issuedTo: string;
 }
 
 export interface ItemLedgerEntry {
-  challanDate: string;
-  challanNo: string;
-  receivedQuantity: number;
-  issueDate: string;
-  issuedTo: string;
+  date: string;
+  referenceNo: string;
+  type: 'Received' | 'Issued';
+  itemNumber: string;
   quantity: number;
-  balanceQuantity: number;
-}
-
-export interface VendorLedgerInvoice {
-  invoiceDate: string;
-  invoiceNo: string;
-  invoiceAmount: number;
-}
-
-export interface VendorLedgerPayment {
-  paymentDate: string;
-  modeOfPayment: string;
-  paymentAmount: number;
+  balance: number;
 }

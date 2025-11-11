@@ -13,16 +13,11 @@ import AuditLogs from "./pages/admin/AuditLogs";
 import FailedTransactions from "./pages/admin/FailedTransactions";
 import ItemMaster from "./pages/ItemMaster";
 import VendorMaster from "./pages/VendorMaster";
-import QuantityMaster from "./pages/QuantityMaster";
-import OrderEntry from "./pages/OrderEntry";
+import DepartmentMaster from "./pages/DepartmentMaster";
+import PurchaseOrderEntry from "./pages/PurchaseOrderEntry";
 import ChallanEntry from "./pages/ChallanEntry";
-import InvoiceEntry from "./pages/InvoiceEntry";
-import VendorPayment from "./pages/VendorPayment";
-import ItemLedger from "./pages/ItemLedger";
-import OrderRegister from "./pages/OrderRegister";
-import ChallanRegister from "./pages/ChallanRegister";
-import InvoiceRegister from "./pages/InvoiceRegister";
-import VendorLedger from "./pages/VendorLedger";
+import BillEntry from "./pages/BillEntry";
+import ItemIssueEntry from "./pages/ItemIssueEntry";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,16 +43,11 @@ const App = () => (
                   <Route path="/admin/failed-transactions" element={<FailedTransactions />} />
                   <Route path="/item-master" element={<ItemMaster />} />
                   <Route path="/vendor-master" element={<VendorMaster />} />
-                  <Route path="/quantity-master" element={<QuantityMaster />} />
-            <Route path="/order-entry" element={<OrderEntry />} />
-            <Route path="/challan-entry" element={<ChallanEntry />} />
-            <Route path="/invoice-entry" element={<InvoiceEntry />} />
-            <Route path="/vendor-payment" element={<VendorPayment />} />
-            <Route path="/item-ledger" element={<ItemLedger />} />
-                  <Route path="/order-register" element={<OrderRegister />} />
-                  <Route path="/challan-register" element={<ChallanRegister />} />
-                  <Route path="/invoice-register" element={<InvoiceRegister />} />
-                  <Route path="/vendor-ledger" element={<VendorLedger />} />
+                  <Route path="/department-master" element={<DepartmentMaster />} />
+                  <Route path="/purchase-order" element={<PurchaseOrderEntry />} />
+                  <Route path="/challan-entry" element={<ChallanEntry />} />
+                  <Route path="/bill-entry" element={<BillEntry />} />
+                  <Route path="/item-issue" element={<ItemIssueEntry />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </AppLayout>

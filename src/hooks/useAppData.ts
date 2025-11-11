@@ -2,20 +2,20 @@ import { useLocalStorage } from './useLocalStorage';
 import { 
   Item, 
   Vendor, 
-  Quantity, 
-  Order, 
+  Department,
+  PurchaseOrder,
   Challan, 
-  Invoice, 
-  VendorLedgerPayment 
+  Bill,
+  ItemIssue
 } from '@/types';
 import { 
   itemsData, 
   vendorsData, 
-  quantitiesData, 
-  ordersData, 
+  departmentsData,
+  purchaseOrdersData,
   challansData, 
-  invoicesData,
-  vendorPaymentsData
+  billsData,
+  itemIssuesData
 } from '@/data/dummyData';
 
 // Custom hooks for each data type
@@ -27,22 +27,22 @@ export function useVendors() {
   return useLocalStorage<Vendor[]>('app_vendors', vendorsData);
 }
 
-export function useQuantities() {
-  return useLocalStorage<Quantity[]>('app_quantities', quantitiesData);
+export function useDepartments() {
+  return useLocalStorage<Department[]>('app_departments', departmentsData);
 }
 
-export function useOrders() {
-  return useLocalStorage<Order[]>('app_orders', ordersData);
+export function usePurchaseOrders() {
+  return useLocalStorage<PurchaseOrder[]>('app_purchase_orders', purchaseOrdersData);
 }
 
 export function useChallans() {
   return useLocalStorage<Challan[]>('app_challans', challansData);
 }
 
-export function useInvoices() {
-  return useLocalStorage<Invoice[]>('app_invoices', invoicesData);
+export function useBills() {
+  return useLocalStorage<Bill[]>('app_bills', billsData);
 }
 
-export function useVendorPayments() {
-  return useLocalStorage<VendorLedgerPayment[]>('app_vendor_payments', vendorPaymentsData);
+export function useItemIssues() {
+  return useLocalStorage<ItemIssue[]>('app_item_issues', itemIssuesData);
 }

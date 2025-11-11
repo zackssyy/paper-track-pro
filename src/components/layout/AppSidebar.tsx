@@ -39,22 +39,14 @@ export function AppSidebar() {
   const masterItems = [
     { title: "Item Master", url: "/item-master", icon: Package },
     { title: "Vendor Master", url: "/vendor-master", icon: Users },
-    { title: "Quantity Master", url: "/quantity-master", icon: Layers },
+    { title: "Department Master", url: "/department-master", icon: Layers },
   ];
 
   const entryItems = [
-    { title: "Order Entry", url: "/order-entry" },
+    { title: "Purchase Order", url: "/purchase-order" },
     { title: "Challan Entry", url: "/challan-entry" },
-    { title: "Invoice Entry", url: "/invoice-entry" },
-    { title: "Vendor Payment", url: "/vendor-payment" },
-  ];
-
-  const reportItems = [
-    { title: "Item Ledger", url: "/item-ledger" },
-    { title: "Order Register", url: "/order-register" },
-    { title: "Challan Register", url: "/challan-register" },
-    { title: "Invoice Register", url: "/invoice-register" },
-    { title: "Vendor Ledger", url: "/vendor-ledger" },
+    { title: "Bill Entry", url: "/bill-entry" },
+    { title: "Item Issue", url: "/item-issue" },
   ];
 
   const adminItems = [
@@ -160,40 +152,6 @@ export function AppSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {entryItems.map((item) => (
-                    <SidebarMenuSub key={item.title}>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
-                          <NavLink
-                            to={item.url}
-                            className={({ isActive }) =>
-                              isActive ? "bg-sidebar-accent" : ""
-                            }
-                          >
-                            <span>{item.title}</span>
-                          </NavLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <Collapsible defaultOpen className="group/collapsible">
-            <SidebarGroupLabel asChild>
-              <CollapsibleTrigger className="flex w-full items-center">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Reports
-                <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {reportItems.map((item) => (
                     <SidebarMenuSub key={item.title}>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild>
